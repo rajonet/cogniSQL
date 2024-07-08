@@ -1,0 +1,172 @@
+-- 1) List all the countries in Asia.
+-- SELECT * FROM cogni.country
+-- where continent = 'Asia';
+
+
+-- 2) Find the 5 most populous cities in the world.
+-- select * from cogni.city
+-- order by population desc
+-- LIMIT 5;
+
+-- 3) Find the countries with a population greater than 100 million.
+-- select name from cogni.country
+-- where population > 100000000;
+
+
+-- 4) List the languages spoken in the country with the code 'JPN'.
+-- select language from cogni.countrylanguage
+-- where countrycode = 'JPN';
+
+
+-- 5) Find the capital city of the country with the largest surface area.
+-- SELECT capital FROM cogni.country
+-- WHERE surfacearea = (
+--     SELECT MAX(surfacearea)
+--     FROM country
+-- );
+
+-- 6) List all cities in Japan.
+-- select name from city
+-- where countrycode = 'JPN';
+
+-- 7) Find the average life expectancy of countries in Europe.
+-- SELECT AVG(lifeexp) AS AvgLifeExpectancy
+-- FROM country
+-- WHERE continent = 'Europe';
+
+-- 8) Find the number of official languages spoken in each country.
+-- SELECT c.Name AS CountryName, COUNT(cl.Language) AS NumOfficialLanguages
+--  FROM country c
+--  LEFT JOIN countrylanguage cl ON c.code = cl.countrycode AND cl.isOffcial = 'T' GROUP BY c.Name;
+
+-- 9) List countries with a life expectancy greater than the world average.
+-- select name from cogni.country
+-- where lifeexp > (select AVG(lifeexp) from cogni.country);
+
+-- 10) Find the total population of all cities in India.
+-- 11) List the names of all capital cities along with their country's name.
+-- select c.name, ci.name 
+-- from country c 
+-- join city ci on ci.countrycode = c.code;
+
+
+-- 12) Find the names of countries where the official language is 'Spanish'.
+-- select c.name from cogni.country c
+-- join cogni.countrylanguage cl on c.code = cl.countrycode AND cl.language = 'Spanish' AND cl.isoffcial= 'T';
+
+-- 13) List the top 10 countries by population density (Population/SurfaceArea).
+-- SELECT name, population / surfacearea AS PopulationDensity
+-- FROM cogni.country
+-- ORDER BY PopulationDensity ASC
+-- LIMIT 10;
+
+
+-- 14) Find the names and populations of cities in countries with a life expectancy greater than 75 years.
+-- select name, population from cogni.country
+-- where lifeexp > 75;
+
+-- 15) List all countries and their corresponding languages, sorted by country name.
+SELECT country.name AS CountryName, countrylanguage.Language
+FROM country
+JOIN countrylanguage ON country.Code = countrylanguage.countrycode
+ORDER BY country.name;
+
+-- 16) Find the countries that have a city named 'Paris'.
+-- select c.name from country c
+-- join city ci on c.code = ci.countrycode AND ci.name = 'Paris';
+
+-- 17) List the names of the countries that have more than 5 official languages.
+-- SELECT country.name
+-- FROM country
+-- JOIN countrylanguage ON country.code = countrylanguage.countrycode
+-- WHERE countrylanguage.isoffcial = 'T'
+-- GROUP BY country.name
+-- HAVING COUNT(countrylanguage.language) > 5;
+
+-- 18) Find the total population of each continent.
+-- select continent, SUM(population)
+-- from country
+-- group by continent
+
+
+
+
+-- 19) List the countries where the capital city's population is more than 10% of the country's total population.
+
+-- 20) Find the average life expectancy for each continent.
+-- select continent, AVG(lifeexp)
+-- from country
+-- group by continent;
+
+-- 21) List the cities that are capitals of countries in South America.
+
+-- select ci.name from city ci
+-- join country c on c.capital = ci.id AND c.continent = 'South America';
+
+-- 22) Find the countries that do not have any cities with a population over 1 million.
+-- SELECT Name FROM country
+-- WHERE Code NOT IN
+-- (SELECT DISTINCT countrycode FROM city
+--     WHERE population > 1000000
+-- );
+
+-- 23) List the countries where the sum of the populations of all cities is more than the country's population.
+-- SELECT country.Name
+-- FROM country
+-- JOIN (
+--     SELECT CountryCode, SUM(Population) AS TotalCityPopulation
+--     FROM city
+--     GROUP BY CountryCode
+-- ) AS city_population ON country.Code = city_population.CountryCode
+-- WHERE city_population.TotalCityPopulation > country.Population;
+
+-- 24)Find the country with the highest number of cities.
+-- SELECT country.Name, COUNT(city.ID) AS NumCities
+-- FROM country
+-- JOIN city ON country.Code = city.CountryCode
+-- GROUP BY country.Name
+-- ORDER BY NumCities DESC
+-- LIMIT 1;
+
+
+-- 25) List the countries where the official language is not English but is spoken by more than 50% of the population.
+-- select c.name from country c
+-- join countrylanguage cl on cl.countrycode = c.code AND (cl.language = 'English' AND cl.isoffcial = 'T');
+
+-- 26) Classify countries into population size categories: 'Small' (population < 1 million), 'Medium' (1 million <= population < 10 million), and 'Large' (population >= 10 million).
+
+-- SELECT
+--     name, population,
+--     CASE
+--         WHEN population < 1000000 THEN 'Small'
+--         WHEN population >= 1000000 AND population < 10000000 THEN 'Medium'
+--         WHEN population >= 10000000 THEN 'Large'
+--     END AS population_category
+-- FROM
+--     country;
+
+
+-- 27) Determine the continent's GDP category: 'Low' (GNP < 100 billion), 'Medium' (100 billion <= GNP < 1 trillion), and 'High' (GNP >= 1 trillion).
+-- SELECT
+--     name, gnp,
+--     CASE
+--         WHEN gnp < 1000000 THEN 'Low'
+--         WHEN gnp >= 1000000 AND gnp < 10000000 THEN 'Medium'
+--         WHEN gnp >= 10000000 THEN 'High'
+--     END AS gdpcat
+-- FROM
+--     country;
+
+-- 28) Label cities as 'Small' (population < 100,000), 'Medium' (100,000 <= population < 1 million), or 'Large' (population >= 1 million).
+-- 29) Classify countries based on life expectancy: 'Low' (life expectancy < 50), 'Average' (50 <= life 
+-- expectancy < 75), and 'High' (life expectancy >= 75)
+
+-- SELECT
+--     name, lifeexp,
+--     CASE
+--         WHEN  lifeexp < 50 THEN 'Low'
+--         WHEN  lifeexp >= 50 AND  lifeexp < 75 THEN 'Average'
+--         WHEN  lifeexp >= 75 THEN 'High'
+--     END AS LifeExp
+-- FROM
+--     country;
